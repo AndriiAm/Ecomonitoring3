@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <link rel="shortcut icon" href="images/favicon1.ico">
+    <title>Моніторинг забруднюючих викидів міст України</title>
+</head>
+
+
+<body>
+    <header>
+        <img id="logo_header" src="images/logo.png" alt="">
+        <nav>
+            <ul>
+                <li><a href="#left_paragraph">Вступ</a></li>
+                <li><a href="#tab">Статистика</a></li>
+                <li><a href="#description1">Посиланная</a></li>
+                <li><a href="#contacts">Контакти</a></li>
+            </ul>
+        </nav>
+    </header>
+
+<main>
+    <p id="left_paragraph">У світі останніми роками почали частіше порушувати питання екології і впливу діяльності людини на навколишнє середовище. Це поступово стало трендом, котрий підтримують всесвітньо відомі компанії з абсолютно різних сфер, починаючи від IT-гігантів на прикладі Apple і закінчуючи мережами швидкого харчування на прикладі McDonalds. Не залишаються осторонь цієї теми і окремі популярні персони, такі як Леонардо ді Капріо, котрий регулярно привертає увагу громадськості на екологічні проблеми та навіть був визнаний представником ООН з питань зміни клімату.</p>
+    <p id="right_paragraph">Нас теж зацікавила тема екології та стану навколишнього середовища, тож нашою командою було вирішено провести невелике дослідження. Ми обрали декілька міст Київської області, знайшли дані щодо кількості та вмісту забруднюючих викидів, а також порівняли результати між собою та, головне, порівняли їх з нормою, котра встановлена Міністерством захисту довкілля та природних ресурсів України. Результати наведені у таблиці нижче.</p>
+    <table id="tab">
+        <tr>
+            <th colspan="8">Оцінка ризику для здоров'я населення від забруднення атмосферного повітря</th>
+        </tr>
+        <tr class="first">
+
+            <td>Назва забруднюючої речовини</td>
+            <td>Назва об'єкту спостереження</td>
+            <td>Рік спостержень</td>
+            <td>Нормативи ГДВ величини масової витрати, мг/м3</td>
+            <td>ГДВ, мг/м3</td>
+            <td>Середньорічний вміст, мг/м3</td>
+            <td>Максимальний вміст, мг/м3</td>
+        </tr>
+
+        <tr class="row">
+            {{#each Pollution}}
+                {{MainTable this.ObjectNumber this.PollutantNumber this.YearOfData this.AvgYearEmission this.MaxEmission}}
+            {{/each}}
+        </tr>
+    </table>
+    <p id="description">*зеленим виділені показники, котрі в межах норми, червоним - показники, що мають небезпеку для здоров'я людини.</p>
+    <p id="description1">Пропонуємо за посиланням ознайомитись з детальним аналізом екологічної ситуації на деяких підприємствах:</p>
+    <figure id="photo1">
+        <a href="http://dspace.tnpu.edu.ua/bitstream/123456789/21162/1/29_Kiryk.pdf" target="_blank"><img src="images/khmel.jpg" alt=""></a>
+        <br>Хмельницька АЕС
+    </figure>
+    <figure id="photo2">
+        <a href="https://core.ac.uk/download/80561243.pdf" target="_blank"><img src="images/tets.jfif" alt=""></a>
+        <br>Трипільска ТЕЦ
+    </figure>
+    <figure id="photo3">
+        <a href="http://dspace.nbuv.gov.ua/bitstream/handle/123456789/104513/52-Gorova.pdf?sequence=1" target="_blank"><img src="images/дарница.jpg" alt=""></a>
+        <br>ТЕЦ №4
+    </figure>
+</main>
+
+<footer>
+    <a href="https://mepr.gov.ua/" target="_blank" id="contacts"><img src="images/logo1.png" width="80px" alt=""></a><br>
+    <p>
+        mobile:<a href = "tel:(044) 206-31-15"> (044) 206-31-15</a>&nbsp
+        <span style="border-left:3px solid #23359C;"></span>
+        &nbsp email:<a href = "mailto:info@mepr.gov.ua"> info@mepr.gov.ua</a><br>
+    </p>
+
+    <p id="copyright">
+        Copyright &copy; 2021
+    </p>
+</footer>
+</body>
+</html>
