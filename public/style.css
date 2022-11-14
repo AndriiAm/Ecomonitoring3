@@ -68,12 +68,16 @@ main{
     text-align: justify;
 }
 
-#tab{
+#tab, #tab1{
     grid-column: 1/7;
-    margin: 60px auto 0px;
     border-collapse: collapse;
     width: 90%;
     font-size: 16px;
+    margin: 0px auto;
+}
+
+#tab{
+    margin: 60px auto 30px;
 }
 
 th, td {

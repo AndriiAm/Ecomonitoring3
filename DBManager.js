@@ -15,7 +15,7 @@ app.set("view engine", "hbs");
 const connection = mysql.createConnection({
     host     : 'localhost',
     user     : 'root',
-    password : 'Bodyspray345#',
+    password : 'password',
     database : 'EcoMonitoring3'
 });
 
