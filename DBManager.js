@@ -15,7 +15,7 @@ app.set("view engine", "hbs");
 const connection = mysql.createConnection({
     host     : 'localhost',
     user     : 'root',
-    password : 'password',
+    password : 'Bodyspray345#',
     database : 'EcoMonitoring3'
 });
 
@@ -31,6 +31,7 @@ connection.connect(function(err){
 let PollutantLoad =  0;
 let PollutionLoad = 0;
 let MonitorObjectsLoad = 0;
+let ValuesLoad = 0;
 
 app.get("/", function(req, res){
 
@@ -49,6 +50,16 @@ app.get("/", function(req, res){
     });
 
 
+    connection.query("SELECT * FROM StandartValues", function(err, data7) {
+        if(err) return console.log(err);
+        ValuesLoad  = data7
+    });
+
+
+
+
+
+
 
     connection.query("SELECT * FROM Pollution", function(err, data2) {
         if(err) return console.log(err);
@@ -56,7 +67,8 @@ app.get("/", function(req, res){
         res.render("index.hbs", {
             Pollutant : PollutantLoad,
             Pollution : PollutionLoad,
-            MonitorObjects : MonitorObjectsLoad
+            MonitorObjects : MonitorObjectsLoad,
+            StandartValues : ValuesLoad
 
 
         });
@@ -67,11 +79,30 @@ app.get("/", function(req, res){
 
 });
 
+function Compare(Human){
 
-hbs.registerHelper("MainTable", function(a,b,c, d,e ){
+    if(Human > Math.pow(10,-3)){
+        return "Високий";
+    }else if(Math.pow(10,-3) >= Human && Human > Math.pow(10,-4) ){
+        return "Середній";
+    }else if(Math.pow(10,-4) >= Human && Human > Math.pow(10,-6)){
+        return "Низький";
+    }else{
+        return "Мінімальний";
+    }
+
+
+}
+
+
+
+
+hbs.registerHelper("MainTable", function(a,b,c,d,e){
 
 
     let result="";
+    let tempMan = "";
+    let tempWoman = "";
 
     for(let i =0; i <PollutantLoad.length; i++){
         if(b == PollutantLoad[i].ID){
@@ -87,31 +118,93 @@ hbs.registerHelper("MainTable", function(a,b,c, d,e ){
 
     result += `<td class = "cell">${c} </td>`;
 
-    for(let i  = 0; i < PollutantLoad.length; i++){
-        if(b == PollutantLoad[i].ID){
-            result += `<td class = "cell">${PollutantLoad[i].AvgDaily} </td>`;
-            result += `<td class = "cell">${PollutantLoad[i].MaxOneTime} </td>`;
-
-        }
-    }
     let temp = b - 1;
 
     if (d > PollutantLoad[temp].AvgDaily) {
-        result += `<td style="color:red">${d} </td>`;
+        result += `<td>${d} </td>`;
     } else {
-        result += `<td style="color:green">${d} </td>`;
+        result += `<td >${d} </td>`;
 
     }
 
     if (e > PollutantLoad[temp].MaxOneTime) {
-        result += `<td style="color:red">${e} </td>`;
+        result += `<td >${e} </td>`;
     } else {
-        result += `<td style="color:green">${e} </td>`;
+        result += `<td>${e} </td>`;
 
     }
+
+    tempMan += ((( d * ValuesLoad[5].Man * ValuesLoad[3].Man ) + (e *
+        ValuesLoad[4].Man * ValuesLoad[2].Man )) * ValuesLoad[6].Man * ValuesLoad[7].Man) / (100 * ValuesLoad[0].Man * ValuesLoad[1].Man * 365 );
+
+
+    result += `<td >${tempMan} </td>`;
+
+
+    let CompareResult = Compare(tempMan);
+    result += `<td >${CompareResult} </td>`;
+
+    tempWoman += ( (( d * ValuesLoad[5].Woman * ValuesLoad[3].Woman ) + (e *
+        ValuesLoad[4].Woman * ValuesLoad[2].Woman )) * ValuesLoad[6].Woman * ValuesLoad[7].Woman) / (100 * ValuesLoad[0].Woman * ValuesLoad[1].Woman * 365 );
+
+    result += `<td >${tempWoman} </td>`;
+
+    let CompareResult1 = Compare(tempWoman);
+    result += `<td >${CompareResult1} </td>`;
+
+
     return new hbs.SafeString(`<tr class="row">${result}</tr>`);
 
 
+});
+
+hbs.registerHelper("SecondTable", function(a,b,c,d){
+
+    let result1 ="";
+    let HQD = "";
+
+
+    for(let i =0; i <PollutantLoad.length; i++){
+        if(b == PollutantLoad[i].ID){
+            result1  += `<td class = "cell">${PollutantLoad[i].PollutantName} </td>`;
+        }
+    }
+    for(let i = 0; i < MonitorObjectsLoad.length; i++){
+        if(a == MonitorObjectsLoad[i].ID){
+            result1  += `<td class = "cell">${MonitorObjectsLoad[i].ObjectName} </td>`;
+        }
+
+    }
+
+    result1  += `<td class = "cell">${c} </td>`;
+
+    let temp = b - 1;
+
+    if (d > PollutantLoad[temp].AvgDaily) {
+        result1  += `<td>${d} </td>`;
+    } else {
+        result1  += `<td >${d} </td>`;
+    }
+
+    for(let i  = 0; i < PollutantLoad.length; i++){
+        if(b == PollutantLoad[i].ID){
+            HQD = d/PollutantLoad[temp].RfC;
+            result1 += `<td>${HQD.toFixed(2)} </td>`;
+        }
+    }
+
+    if(HQD > 1){
+        let HighRisk = "Імовірність розвитку шкідливих ефектів";
+        result1 += `<td>${HighRisk} </td>`;
+    }else if(HQD < 1){
+        let LowRisk = "Малий ризик виникнення шкідливих ефектів";
+        result1 += `<td>${LowRisk} </td>`;
+    }else{
+        let MedRisk = "Гранична величина, що не потребує термінових заходів";
+        result1 += `<td>${MedRisk} </td>`;
+    }
+
+    return new hbs.SafeString(`<tr class="row">${result1}</tr>`);
 });
 
 
